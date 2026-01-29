@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>婴儿辅食记录</title>
+    <title>婴儿辅食记录系统</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -17,77 +17,176 @@
             background-color: #f8f9fa;
             color: #333;
             line-height: 1.6;
-            padding: 20px;
-            max-width: 1400px;
+            padding: 0;
+            max-width: 100%;
             margin: 0 auto;
         }
         
         .container {
             background-color: white;
+            border-radius: 0;
+            box-shadow: none;
+            overflow: hidden;
+            margin-bottom: 0;
+            display: none;
+            min-height: 100vh;
+        }
+        
+        .login-container {
+            background-color: white;
             border-radius: 15px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-            overflow: hidden;
-            margin-bottom: 30px;
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 30px;
+            width: 90%;
         }
         
         header {
             background: linear-gradient(135deg, #6a89cc 0%, #4a69bd 100%);
             color: white;
-            padding: 30px;
+            padding: 20px;
             text-align: center;
             position: relative;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
         
         header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
+            font-size: 1.8rem;
+            margin-bottom: 5px;
         }
         
         header p {
-            font-size: 1.1rem;
+            font-size: 0.9rem;
             opacity: 0.9;
             max-width: 800px;
             margin: 0 auto;
         }
         
         .baby-icon {
+            font-size: 2rem;
+            color: #ffdd59;
+            margin-bottom: 10px;
+        }
+        
+        .user-menu {
             position: absolute;
             top: 20px;
-            right: 30px;
-            font-size: 2.5rem;
-            color: #ffdd59;
+            left: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background-color: #ffdd59;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #4a69bd;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .user-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: white;
+            min-width: 180px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            z-index: 1000;
+            padding: 10px 0;
+            left: 0;
+            top: 45px;
+        }
+        
+        .dropdown-content a {
+            color: #333;
+            padding: 10px 20px;
+            text-decoration: none;
+            display: block;
+            transition: background-color 0.3s;
+        }
+        
+        .dropdown-content a:hover {
+            background-color: #f1f2f6;
+        }
+        
+        .user-dropdown:hover .dropdown-content {
+            display: block;
         }
         
         .main-content {
             display: flex;
-            flex-wrap: wrap;
+            flex-direction: column;
             padding: 0;
+            min-height: calc(100vh - 160px);
         }
         
-        .input-section {
+        .tabs-container {
+            display: flex;
+            overflow-x: auto;
+            background-color: white;
+            border-bottom: 1px solid #eee;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .tab {
             flex: 1;
-            min-width: 350px;
-            padding: 30px;
-            border-right: 1px solid #eee;
-            background-color: #fafafa;
+            min-width: 120px;
+            padding: 15px;
+            text-align: center;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #555;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s;
         }
         
-        .food-library-section {
+        .tab:hover {
+            background-color: #f1f2f6;
+        }
+        
+        .tab.active {
+            color: #4a69bd;
+            border-bottom-color: #4a69bd;
+            background-color: #f8f9fa;
+        }
+        
+        .tab i {
+            margin-right: 8px;
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 20px;
             flex: 1;
-            min-width: 350px;
-            padding: 30px;
-            border-right: 1px solid #eee;
-            background-color: #fefefe;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
         
-        .records-section {
-            flex: 2;
-            min-width: 400px;
-            padding: 30px;
+        .tab-content.active {
+            display: block;
         }
         
         .section-title {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             margin-bottom: 20px;
             color: #4a69bd;
             padding-bottom: 10px;
@@ -164,6 +263,16 @@
             background-color: #3c5188;
         }
         
+        .btn-login {
+            background-color: #38ada9;
+            width: 100%;
+            margin-top: 20px;
+        }
+        
+        .btn-login:hover {
+            background-color: #2d8c88;
+        }
+        
         .btn-add {
             background-color: #38ada9;
             width: 100%;
@@ -184,34 +293,45 @@
             background-color: #8e44ad;
         }
         
+        .btn-logout {
+            background-color: #e55039;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+        
         .filter-section {
             background-color: #f1f2f6;
-            padding: 20px;
+            padding: 15px;
             border-radius: 10px;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
         
         .filter-controls {
             display: flex;
             flex-wrap: wrap;
-            gap: 15px;
-            margin-top: 15px;
+            gap: 10px;
+            margin-top: 10px;
         }
         
         .filter-controls input, .filter-controls select {
             flex: 1;
-            min-width: 200px;
+            min-width: 100%;
         }
         
         .records-list {
-            max-height: 500px;
+            max-height: 400px;
             overflow-y: auto;
         }
         
         .record-item {
             background-color: white;
             border-radius: 10px;
-            padding: 20px;
+            padding: 15px;
             margin-bottom: 15px;
             box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
             border-left: 5px solid #4a69bd;
@@ -235,10 +355,11 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 10px;
+            flex-wrap: wrap;
         }
         
         .food-name {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: 700;
             color: #2c3e50;
         }
@@ -251,7 +372,7 @@
         .record-details {
             display: flex;
             flex-wrap: wrap;
-            gap: 15px;
+            gap: 10px;
             margin-top: 15px;
         }
         
@@ -287,6 +408,7 @@
             padding-top: 15px;
             border-top: 1px dashed #ddd;
             color: #555;
+            font-size: 0.9rem;
         }
         
         .no-records {
@@ -304,12 +426,13 @@
         
         .record-actions {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             margin-top: 15px;
+            flex-wrap: wrap;
         }
         
         .btn-action {
-            padding: 8px 15px;
+            padding: 8px 12px;
             font-size: 0.9rem;
             border-radius: 6px;
             background-color: #f1f2f6;
@@ -317,6 +440,8 @@
             border: none;
             cursor: pointer;
             transition: all 0.3s;
+            flex: 1;
+            min-width: 100px;
         }
         
         .btn-action:hover {
@@ -332,18 +457,18 @@
             background-color: #fdcb6e;
         }
         
-        .stats {
-            display: flex;
-            justify-content: space-around;
-            background-color: #f1f2f6;
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 30px;
-            text-align: center;
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
         }
         
         .stat-item {
-            padding: 10px;
+            background-color: #f1f2f6;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
         }
         
         .stat-value {
@@ -360,10 +485,10 @@
         
         .food-library {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 12px;
             margin-top: 20px;
-            max-height: 300px;
+            max-height: 400px;
             overflow-y: auto;
             padding: 10px;
         }
@@ -371,7 +496,7 @@
         .food-item {
             background-color: white;
             border-radius: 10px;
-            padding: 15px;
+            padding: 12px;
             text-align: center;
             box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
             border: 2px solid #eee;
@@ -391,25 +516,26 @@
         }
         
         .food-icon {
-            font-size: 1.8rem;
-            margin-bottom: 10px;
+            font-size: 1.5rem;
+            margin-bottom: 8px;
             color: #4a69bd;
         }
         
         .food-item-name {
             font-weight: 600;
             color: #2c3e50;
+            font-size: 0.9rem;
         }
         
         .category-filter {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 8px;
             margin-bottom: 15px;
         }
         
         .category-btn {
-            padding: 8px 15px;
+            padding: 8px 12px;
             background-color: #f1f2f6;
             border: none;
             border-radius: 20px;
@@ -432,46 +558,255 @@
         }
         
         .category-title {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             margin-bottom: 15px;
             color: #2c3e50;
             padding-bottom: 8px;
             border-bottom: 1px solid #eee;
         }
         
+        .login-title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #4a69bd;
+        }
+        
+        .login-title h2 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+        
+        .login-title i {
+            font-size: 3rem;
+            color: #ffdd59;
+            margin-bottom: 20px;
+        }
+        
+        .remember-me {
+            display: flex;
+            align-items: center;
+            margin-top: 15px;
+        }
+        
+        .remember-me input {
+            width: auto;
+            margin-right: 10px;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1001;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 25px;
+            border-radius: 15px;
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .modal-header h3 {
+            color: #4a69bd;
+            font-size: 1.4rem;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #7f8c8d;
+        }
+        
+        .fab-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: #38ada9;
+            color: white;
+            border: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            z-index: 99;
+            transition: all 0.3s;
+        }
+        
+        .fab-button:hover {
+            background-color: #2d8c88;
+            transform: scale(1.1);
+        }
+        
         footer {
             text-align: center;
-            margin-top: 40px;
-            padding-top: 20px;
+            padding: 20px;
             border-top: 1px solid #eee;
             color: #7f8c8d;
             font-size: 0.9rem;
+            background-color: white;
+            margin-top: auto;
         }
         
-        @media (max-width: 1100px) {
-            .main-content {
-                flex-direction: column;
+        @media (min-width: 768px) {
+            .container {
+                border-radius: 15px;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+                margin: 20px auto;
+                max-width: 1200px;
+                min-height: auto;
             }
             
-            .input-section, .food-library-section {
-                border-right: none;
-                border-bottom: 1px solid #eee;
+            .login-container {
+                margin: 100px auto;
+            }
+            
+            header {
+                padding: 30px;
             }
             
             header h1 {
-                font-size: 2rem;
+                font-size: 2.2rem;
             }
             
-            .baby-icon {
-                position: static;
-                margin-bottom: 15px;
+            header p {
+                font-size: 1.1rem;
+            }
+            
+            .tab {
+                min-width: 150px;
+                font-size: 1.1rem;
+            }
+            
+            .tab-content {
+                padding: 30px;
+            }
+            
+            .filter-controls input, .filter-controls select {
+                min-width: 200px;
+            }
+            
+            .food-library {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            }
+            
+            .btn-action {
+                flex: 0;
+            }
+        }
+        
+        @media (min-width: 992px) {
+            .main-content {
+                flex-direction: row;
+                min-height: calc(100vh - 200px);
+            }
+            
+            .tabs-container {
+                flex-direction: column;
+                width: 200px;
+                border-bottom: none;
+                border-right: 1px solid #eee;
+                overflow-y: auto;
+            }
+            
+            .tab {
+                padding: 20px;
+                text-align: left;
+                border-bottom: none;
+                border-right: 3px solid transparent;
+                min-width: auto;
+            }
+            
+            .tab.active {
+                border-right-color: #4a69bd;
+                border-bottom-color: transparent;
+            }
+            
+            .tab-content {
+                flex: 1;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
+    <!-- 登录界面 -->
+    <div class="login-container" id="login-container">
+        <div class="login-title">
+            <i class="fas fa-baby"></i>
+            <h2>婴儿辅食记录系统</h2>
+            <p>请登录以管理宝宝的辅食记录</p>
+        </div>
+        
+        <form id="login-form">
+            <div class="form-group">
+                <label for="username">用户名</label>
+                <input type="text" id="username" placeholder="请输入用户名" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">密码</label>
+                <input type="password" id="password" placeholder="请输入密码" required>
+            </div>
+            
+            <div class="remember-me">
+                <input type="checkbox" id="remember-me">
+                <label for="remember-me">记住此设备</label>
+            </div>
+            
+            <button type="submit" class="btn btn-login">
+                <i class="fas fa-sign-in-alt"></i> 登录
+            </button>
+        </form>
+        
+        <div style="margin-top: 20px; text-align: center; color: #7f8c8d; font-size: 0.9rem;">
+            <p>默认用户名: <strong>admin</strong>，密码: <strong>admin</strong></p>
+        </div>
+    </div>
+    
+    <!-- 主内容容器 -->
+    <div class="container" id="main-container">
         <header>
+            <div class="user-menu">
+                <div class="user-dropdown">
+                    <div class="user-avatar" id="user-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="dropdown-content">
+                        <a href="#" id="add-food-btn"><i class="fas fa-plus"></i> 添加辅食</a>
+                        <a href="#" id="change-password-btn"><i class="fas fa-key"></i> 修改密码</a>
+                        <a href="#" id="logout-btn"><i class="fas fa-sign-out-alt"></i> 退出登录</a>
+                    </div>
+                </div>
+                <span id="username-display">admin</span>
+            </div>
+            
             <div class="baby-icon">
                 <i class="fas fa-baby"></i>
             </div>
@@ -480,99 +815,20 @@
         </header>
         
         <div class="main-content">
-            <section class="input-section">
-                <h2 class="section-title"><i class="fas fa-plus-circle"></i> 添加新辅食</h2>
-                
-                <form id="food-form">
-                    <div class="form-group">
-                        <label for="food-name">辅食名称 *</label>
-                        <input type="text" id="food-name" placeholder="例如：胡萝卜泥、苹果泥、米粉" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="food-date">尝试日期 *</label>
-                        <input type="date" id="food-date" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>是否尝试过？</label>
-                        <div class="checkbox-group">
-                            <div class="checkbox-item">
-                                <input type="radio" id="eaten-yes" name="eaten" value="yes" checked>
-                                <label for="eaten-yes">已尝试</label>
-                            </div>
-                            <div class="checkbox-item">
-                                <input type="radio" id="eaten-no" name="eaten" value="no">
-                                <label for="eaten-no">未尝试</label>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>过敏反应</label>
-                        <div class="checkbox-group">
-                            <div class="checkbox-item">
-                                <input type="radio" id="allergy-yes" name="allergy" value="yes">
-                                <label for="allergy-yes">有过敏</label>
-                            </div>
-                            <div class="checkbox-item">
-                                <input type="radio" id="allergy-no" name="allergy" value="no" checked>
-                                <label for="allergy-no">无过敏</label>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="food-notes">备注 (可选)</label>
-                        <textarea id="food-notes" rows="3" placeholder="记录宝宝的喜爱程度、反应或其他需要注意的事项..."></textarea>
-                    </div>
-                    
-                    <button type="submit" class="btn btn-add">
-                        <i class="fas fa-save"></i> 保存辅食记录
-                    </button>
-                </form>
-                
-                <div class="stats">
-                    <div class="stat-item">
-                        <div class="stat-value" id="total-count">0</div>
-                        <div class="stat-label">总记录</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="tried-count">0</div>
-                        <div class="stat-label">已尝试</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="allergy-count">0</div>
-                        <div class="stat-label">过敏</div>
-                    </div>
-                </div>
-            </section>
-            
-            <section class="food-library-section">
-                <h2 class="section-title"><i class="fas fa-book"></i> 常见辅食库</h2>
-                <p>点击下方辅食快速添加到记录中（默认标记为未尝试、无过敏）</p>
-                
-                <div class="category-filter" id="category-filter">
-                    <button class="category-btn active" data-category="all">全部</button>
-                    <button class="category-btn" data-category="vegetables">蔬菜类</button>
-                    <button class="category-btn" data-category="fruits">水果类</button>
-                    <button class="category-btn" data-category="grains">谷物类</button>
-                    <button class="category-btn" data-category="protein">蛋白质类</button>
-                    <button class="category-btn" data-category="dairy">乳制品</button>
-                </div>
-                
-                <div id="food-library">
-                    <!-- 辅食库内容将通过JavaScript动态生成 -->
-                </div>
-                
-                <button class="btn btn-add-from-library" id="add-from-library">
-                    <i class="fas fa-plus-circle"></i> 添加选中的辅食到记录
+            <div class="tabs-container">
+                <button class="tab active" data-tab="records">
+                    <i class="fas fa-history"></i> 辅食记录
                 </button>
-            </section>
+                <button class="tab" data-tab="library">
+                    <i class="fas fa-book"></i> 辅食库
+                </button>
+                <button class="tab" data-tab="stats">
+                    <i class="fas fa-chart-bar"></i> 统计
+                </button>
+            </div>
             
-            <section class="records-section">
-                <h2 class="section-title"><i class="fas fa-history"></i> 辅食记录</h2>
-                
+            <!-- 辅食记录标签页 -->
+            <div class="tab-content active" id="records-tab">
                 <div class="filter-section">
                     <label>筛选记录</label>
                     <div class="filter-controls">
@@ -597,14 +853,164 @@
                         <p>暂无辅食记录，请从辅食库中选择或手动添加</p>
                     </div>
                 </div>
-            </section>
+            </div>
+            
+            <!-- 辅食库标签页 -->
+            <div class="tab-content" id="library-tab">
+                <h2 class="section-title"><i class="fas fa-book"></i> 常见辅食库</h2>
+                <p>点击下方辅食快速添加到记录中（默认标记为未尝试、无过敏）</p>
+                
+                <div class="category-filter" id="category-filter">
+                    <button class="category-btn active" data-category="all">全部</button>
+                    <button class="category-btn" data-category="vegetables">蔬菜类</button>
+                    <button class="category-btn" data-category="fruits">水果类</button>
+                    <button class="category-btn" data-category="grains">谷物类</button>
+                    <button class="category-btn" data-category="protein">蛋白质类</button>
+                    <button class="category-btn" data-category="dairy">乳制品</button>
+                </div>
+                
+                <div id="food-library">
+                    <!-- 辅食库内容将通过JavaScript动态生成 -->
+                </div>
+                
+                <button class="btn btn-add-from-library" id="add-from-library">
+                    <i class="fas fa-plus-circle"></i> 添加选中的辅食到记录
+                </button>
+            </div>
+            
+            <!-- 统计标签页 -->
+            <div class="tab-content" id="stats-tab">
+                <h2 class="section-title"><i class="fas fa-chart-bar"></i> 辅食统计</h2>
+                
+                <div class="stats-container">
+                    <div class="stat-item">
+                        <div class="stat-value" id="total-count">0</div>
+                        <div class="stat-label">总记录数</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="tried-count">0</div>
+                        <div class="stat-label">已尝试</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="allergy-count">0</div>
+                        <div class="stat-label">过敏记录</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="not-tried-count">0</div>
+                        <div class="stat-label">未尝试</div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 30px;">
+                    <h3 class="section-title"><i class="fas fa-list"></i> 过敏食物列表</h3>
+                    <div id="allergy-list" style="margin-top: 15px;">
+                        <!-- 过敏食物列表将在这里动态生成 -->
+                        <p class="no-records" style="padding: 20px;">暂无过敏记录</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 悬浮按钮 (移动端添加辅食) -->
+        <button class="fab-button" id="mobile-add-btn">
+            <i class="fas fa-plus"></i>
+        </button>
+        
+        <footer>
+            <p>数据保存在您的浏览器本地存储中，请勿清除浏览器数据以免丢失记录</p>
+            <p>© 2023 婴儿辅食记录助手 | 设计：父母关爱</p>
+        </footer>
+    </div>
+    
+    <!-- 添加辅食模态框 -->
+    <div class="modal" id="add-food-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-plus-circle"></i> 添加新辅食</h3>
+                <button class="close-modal" id="close-add-food-modal">&times;</button>
+            </div>
+            
+            <form id="add-food-form">
+                <div class="form-group">
+                    <label for="modal-food-name">辅食名称 *</label>
+                    <input type="text" id="modal-food-name" placeholder="例如：胡萝卜泥、苹果泥、米粉" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="modal-food-date">尝试日期 *</label>
+                    <input type="date" id="modal-food-date" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>是否尝试过？</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="radio" id="modal-eaten-yes" name="modal-eaten" value="yes" checked>
+                            <label for="modal-eaten-yes">已尝试</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="radio" id="modal-eaten-no" name="modal-eaten" value="no">
+                            <label for="modal-eaten-no">未尝试</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>过敏反应</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="radio" id="modal-allergy-yes" name="modal-allergy" value="yes">
+                            <label for="modal-allergy-yes">有过敏</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="radio" id="modal-allergy-no" name="modal-allergy" value="no" checked>
+                            <label for="modal-allergy-no">无过敏</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="modal-food-notes">备注 (可选)</label>
+                    <textarea id="modal-food-notes" rows="3" placeholder="记录宝宝的喜爱程度、反应或其他需要注意的事项..."></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-add">
+                    <i class="fas fa-save"></i> 保存辅食记录
+                </button>
+            </form>
         </div>
     </div>
     
-    <footer>
-        <p>数据保存在您的浏览器本地存储中，请勿清除浏览器数据以免丢失记录</p>
-        <p>© 2023 婴儿辅食记录助手 | 设计：父母关爱</p>
-    </footer>
+    <!-- 修改密码模态框 -->
+    <div class="modal" id="change-password-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-key"></i> 修改密码</h3>
+                <button class="close-modal" id="close-change-password-modal">&times;</button>
+            </div>
+            
+            <form id="change-password-form">
+                <div class="form-group">
+                    <label for="current-password">当前密码</label>
+                    <input type="password" id="current-password" placeholder="请输入当前密码" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="new-password">新密码</label>
+                    <input type="password" id="new-password" placeholder="请输入新密码" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirm-password">确认新密码</label>
+                    <input type="password" id="confirm-password" placeholder="请再次输入新密码" required>
+                </div>
+                
+                <button type="submit" class="btn btn-login">
+                    <i class="fas fa-save"></i> 保存新密码
+                </button>
+            </form>
+        </div>
+    </div>
 
     <script>
         // 定义常见辅食库
@@ -698,24 +1104,117 @@
             "baby-bottle": "fas fa-baby-bottle"
         };
         
+        // 用户管理相关
+        const USER_KEY = 'babyFoodUser';
+        const REMEMBER_ME_KEY = 'babyFoodRememberMe';
+        
+        // 初始化默认用户
+        function initDefaultUser() {
+            const user = getUser();
+            if (!user) {
+                // 创建默认用户
+                const defaultUser = {
+                    username: 'admin',
+                    password: 'admin',
+                    isDefaultPassword: true
+                };
+                localStorage.setItem(USER_KEY, JSON.stringify(defaultUser));
+            }
+        }
+        
+        // 获取用户信息
+        function getUser() {
+            const userJson = localStorage.getItem(USER_KEY);
+            return userJson ? JSON.parse(userJson) : null;
+        }
+        
+        // 保存用户信息
+        function saveUser(user) {
+            localStorage.setItem(USER_KEY, JSON.stringify(user));
+        }
+        
+        // 检查是否应该记住登录状态
+        function shouldRememberLogin() {
+            return localStorage.getItem(REMEMBER_ME_KEY) === 'true';
+        }
+        
+        // 设置记住登录状态
+        function setRememberLogin(remember) {
+            if (remember) {
+                localStorage.setItem(REMEMBER_ME_KEY, 'true');
+            } else {
+                localStorage.removeItem(REMEMBER_ME_KEY);
+            }
+        }
+        
+        // 检查用户是否已登录
+        function isLoggedIn() {
+            // 检查sessionStorage中的登录状态
+            return sessionStorage.getItem('isLoggedIn') === 'true' || shouldRememberLogin();
+        }
+        
+        // 设置登录状态
+        function setLoggedIn(status, username) {
+            if (status) {
+                sessionStorage.setItem('isLoggedIn', 'true');
+                sessionStorage.setItem('username', username);
+            } else {
+                sessionStorage.removeItem('isLoggedIn');
+                sessionStorage.removeItem('username');
+            }
+        }
+        
+        // 验证登录
+        function validateLogin(username, password) {
+            const user = getUser();
+            return user && user.username === username && user.password === password;
+        }
+        
         // 页面加载时初始化
         document.addEventListener('DOMContentLoaded', function() {
-            // 设置默认日期为今天
-            document.getElementById('food-date').valueAsDate = new Date();
+            // 初始化默认用户
+            initDefaultUser();
             
-            // 加载现有记录
-            loadRecords();
+            // 检查是否已登录
+            if (isLoggedIn()) {
+                // 显示主界面，隐藏登录界面
+                document.getElementById('login-container').style.display = 'none';
+                document.getElementById('main-container').style.display = 'block';
+                
+                // 显示用户名
+                const username = sessionStorage.getItem('username') || 'admin';
+                document.getElementById('username-display').textContent = username;
+                
+                // 设置默认日期为今天
+                document.getElementById('modal-food-date').valueAsDate = new Date();
+                
+                // 加载现有记录
+                loadRecords();
+                
+                // 加载辅食库
+                renderFoodLibrary();
+                
+                // 初始化事件监听器
+                initEventListeners();
+            } else {
+                // 显示登录界面，隐藏主界面
+                document.getElementById('login-container').style.display = 'block';
+                document.getElementById('main-container').style.display = 'none';
+            }
             
-            // 添加表单提交事件
-            document.getElementById('food-form').addEventListener('submit', addFoodRecord);
+            // 添加登录表单提交事件
+            document.getElementById('login-form').addEventListener('submit', handleLogin);
+        });
+        
+        // 初始化事件监听器
+        function initEventListeners() {
+            // 添加辅食表单提交事件
+            document.getElementById('add-food-form').addEventListener('submit', addFoodRecord);
             
             // 添加筛选事件
             document.getElementById('search-input').addEventListener('input', filterRecords);
             document.getElementById('filter-eaten').addEventListener('change', filterRecords);
             document.getElementById('filter-allergy').addEventListener('change', filterRecords);
-            
-            // 加载辅食库
-            renderFoodLibrary();
             
             // 添加从辅食库添加的事件
             document.getElementById('add-from-library').addEventListener('click', addSelectedFoods);
@@ -731,7 +1230,187 @@
                     filterFoodLibrary(this.dataset.category);
                 });
             });
-        });
+            
+            // 添加Tab切换事件
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabId = this.dataset.tab;
+                    
+                    // 更新活动Tab
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // 显示对应的内容
+                    document.querySelectorAll('.tab-content').forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    document.getElementById(tabId + '-tab').classList.add('active');
+                    
+                    // 如果切换到统计标签，更新统计信息
+                    if (tabId === 'stats') {
+                        updateAllStats();
+                    }
+                });
+            });
+            
+            // 添加添加辅食按钮事件
+            document.getElementById('add-food-btn').addEventListener('click', function(e) {
+                e.preventDefault();
+                document.getElementById('add-food-modal').style.display = 'flex';
+            });
+            
+            // 添加移动端添加辅食按钮事件
+            document.getElementById('mobile-add-btn').addEventListener('click', function() {
+                document.getElementById('add-food-modal').style.display = 'flex';
+            });
+            
+            // 添加关闭添加辅食模态框事件
+            document.getElementById('close-add-food-modal').addEventListener('click', function() {
+                document.getElementById('add-food-modal').style.display = 'none';
+            });
+            
+            // 添加修改密码按钮事件
+            document.getElementById('change-password-btn').addEventListener('click', function(e) {
+                e.preventDefault();
+                document.getElementById('change-password-modal').style.display = 'flex';
+            });
+            
+            // 添加关闭修改密码模态框事件
+            document.getElementById('close-change-password-modal').addEventListener('click', function() {
+                document.getElementById('change-password-modal').style.display = 'none';
+            });
+            
+            // 添加修改密码表单提交事件
+            document.getElementById('change-password-form').addEventListener('submit', handleChangePassword);
+            
+            // 添加退出登录事件
+            document.getElementById('logout-btn').addEventListener('click', function(e) {
+                e.preventDefault();
+                handleLogout();
+            });
+            
+            // 点击模态框外部关闭模态框
+            window.addEventListener('click', function(event) {
+                const addFoodModal = document.getElementById('add-food-modal');
+                const changePasswordModal = document.getElementById('change-password-modal');
+                
+                if (event.target === addFoodModal) {
+                    addFoodModal.style.display = 'none';
+                }
+                
+                if (event.target === changePasswordModal) {
+                    changePasswordModal.style.display = 'none';
+                }
+            });
+        }
+        
+        // 处理登录
+        function handleLogin(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const rememberMe = document.getElementById('remember-me').checked;
+            
+            if (!username || !password) {
+                showMessage('请输入用户名和密码', 'error');
+                return;
+            }
+            
+            if (validateLogin(username, password)) {
+                // 登录成功
+                setLoggedIn(true, username);
+                setRememberLogin(rememberMe);
+                
+                // 显示主界面，隐藏登录界面
+                document.getElementById('login-container').style.display = 'none';
+                document.getElementById('main-container').style.display = 'block';
+                
+                // 显示用户名
+                document.getElementById('username-display').textContent = username;
+                
+                // 设置默认日期为今天
+                document.getElementById('modal-food-date').valueAsDate = new Date();
+                
+                // 加载现有记录
+                loadRecords();
+                
+                // 初始化事件监听器
+                initEventListeners();
+                
+                // 显示成功消息
+                showMessage('登录成功！', 'success');
+                
+                // 如果用户使用的是默认密码，提示修改密码
+                const user = getUser();
+                if (user.isDefaultPassword) {
+                    setTimeout(() => {
+                        showMessage('您正在使用默认密码，建议修改密码以提高安全性', 'warning');
+                        document.getElementById('change-password-modal').style.display = 'flex';
+                    }, 1000);
+                }
+            } else {
+                showMessage('用户名或密码错误', 'error');
+            }
+        }
+        
+        // 处理修改密码
+        function handleChangePassword(e) {
+            e.preventDefault();
+            
+            const currentPassword = document.getElementById('current-password').value;
+            const newPassword = document.getElementById('new-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            
+            // 获取当前用户
+            const user = getUser();
+            
+            // 验证当前密码
+            if (currentPassword !== user.password) {
+                showMessage('当前密码不正确', 'error');
+                return;
+            }
+            
+            // 验证新密码
+            if (newPassword.length < 4) {
+                showMessage('新密码至少需要4个字符', 'error');
+                return;
+            }
+            
+            // 验证确认密码
+            if (newPassword !== confirmPassword) {
+                showMessage('两次输入的新密码不一致', 'error');
+                return;
+            }
+            
+            // 更新密码
+            user.password = newPassword;
+            user.isDefaultPassword = false;
+            saveUser(user);
+            
+            // 关闭模态框
+            document.getElementById('change-password-modal').style.display = 'none';
+            
+            // 清空表单
+            document.getElementById('change-password-form').reset();
+            
+            // 显示成功消息
+            showMessage('密码修改成功！', 'success');
+        }
+        
+        // 处理退出登录
+        function handleLogout() {
+            if (confirm('确定要退出登录吗？')) {
+                setLoggedIn(false);
+                document.getElementById('login-container').style.display = 'block';
+                document.getElementById('main-container').style.display = 'none';
+                
+                // 清空登录表单
+                document.getElementById('login-form').reset();
+                
+                showMessage('已退出登录', 'success');
+            }
+        }
         
         // 渲染辅食库
         function renderFoodLibrary() {
@@ -840,6 +1519,15 @@
             // 刷新显示
             filterRecords();
             
+            // 切换到记录标签页
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelector('.tab[data-tab="records"]').classList.add('active');
+            
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById('records-tab').classList.add('active');
+            
             // 显示成功消息
             showMessage(`成功添加 ${selectedFoods.length} 种辅食到记录中`, 'success');
         }
@@ -865,11 +1553,11 @@
         function addFoodRecord(e) {
             e.preventDefault();
             
-            const foodName = document.getElementById('food-name').value.trim();
-            const foodDate = document.getElementById('food-date').value;
-            const eaten = document.querySelector('input[name="eaten"]:checked').value;
-            const allergy = document.querySelector('input[name="allergy"]:checked').value;
-            const notes = document.getElementById('food-notes').value.trim();
+            const foodName = document.getElementById('modal-food-name').value.trim();
+            const foodDate = document.getElementById('modal-food-date').value;
+            const eaten = document.querySelector('input[name="modal-eaten"]:checked').value;
+            const allergy = document.querySelector('input[name="modal-allergy"]:checked').value;
+            const notes = document.getElementById('modal-food-notes').value.trim();
             
             if (!foodName) {
                 alert('请输入辅食名称');
@@ -891,11 +1579,23 @@
             saveRecords(records);
             
             // 重置表单
-            document.getElementById('food-form').reset();
-            document.getElementById('food-date').valueAsDate = new Date();
+            document.getElementById('add-food-form').reset();
+            document.getElementById('modal-food-date').valueAsDate = new Date();
+            
+            // 关闭模态框
+            document.getElementById('add-food-modal').style.display = 'none';
             
             // 刷新显示
             filterRecords();
+            
+            // 切换到记录标签页
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelector('.tab[data-tab="records"]').classList.add('active');
+            
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById('records-tab').classList.add('active');
             
             // 显示成功消息
             showMessage('辅食记录已保存！', 'success');
@@ -1073,10 +1773,50 @@
             const totalCount = records.length;
             const triedCount = records.filter(record => record.eaten).length;
             const allergyCount = records.filter(record => record.allergy).length;
+            const notTriedCount = totalCount - triedCount;
             
             document.getElementById('total-count').textContent = totalCount;
             document.getElementById('tried-count').textContent = triedCount;
             document.getElementById('allergy-count').textContent = allergyCount;
+            document.getElementById('not-tried-count').textContent = notTriedCount;
+        }
+        
+        // 更新所有统计信息（包括过敏列表）
+        function updateAllStats() {
+            updateStats();
+            updateAllergyList();
+        }
+        
+        // 更新过敏食物列表
+        function updateAllergyList() {
+            const records = getAllRecords();
+            const allergyRecords = records.filter(record => record.allergy);
+            const allergyList = document.getElementById('allergy-list');
+            
+            if (allergyRecords.length === 0) {
+                allergyList.innerHTML = '<p class="no-records" style="padding: 20px;">暂无过敏记录</p>';
+                return;
+            }
+            
+            let allergyHTML = '';
+            
+            allergyRecords.forEach(record => {
+                // 格式化日期
+                const dateObj = new Date(record.date);
+                const formattedDate = `${dateObj.getFullYear()}年${dateObj.getMonth()+1}月${dateObj.getDate()}日`;
+                
+                allergyHTML += `
+                    <div class="record-item allergic" style="margin-bottom: 10px;">
+                        <div class="record-header">
+                            <div class="food-name">${record.name}</div>
+                            <div class="record-date">${formattedDate}</div>
+                        </div>
+                        ${record.notes ? `<div class="notes"><strong>备注：</strong>${record.notes}</div>` : ''}
+                    </div>
+                `;
+            });
+            
+            allergyList.innerHTML = allergyHTML;
         }
         
         // 显示临时消息
@@ -1167,6 +1907,7 @@
                 
                 saveRecords(sampleRecords);
                 loadRecords();
+                updateAllergyList();
             }
         }
         
